@@ -55,6 +55,8 @@ jobs:
 
           cd dist
           touch .nojekyll
+          # SPA fallback for GitHub Pages: serve index for deep links
+          cp index.html 404.html
 
           git init
           git checkout -b gh-pages

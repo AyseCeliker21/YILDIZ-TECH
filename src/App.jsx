@@ -15,10 +15,20 @@ import Kvkk from './pages/Kvkk';
 import Blog from './pages/Blog';
 import ServicesPage from './pages/ServicesPage';
 
+const getRouterBasename = () => {
+  if (typeof window === 'undefined') return '/';
+
+  const isGitHubIo = window.location.hostname.endsWith('github.io');
+  if (!isGitHubIo) return '/';
+
+  const firstSegment = window.location.pathname.split('/').filter(Boolean)[0];
+  return firstSegment ? `/${firstSegment}` : '/';
+};
+
 const App = () => {
   return (
     <I18nProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter basename={getRouterBasename()}>
         <Navbar />
         <Routes>
         <Route path="/" element={<Home />} />
