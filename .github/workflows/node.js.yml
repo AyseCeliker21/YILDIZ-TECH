@@ -17,23 +17,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Checkout (manual)
+        shell: bash
+        env:
+          REPO: ${{ github.repository }}
+          REF: ${{ github.ref_name }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rm -rf repo
+          git clone --depth 1 --branch "$REF" "https://x-access-token:${TOKEN}@github.com/${REPO}.git" repo
 
       - name: Build
-        run: npm run build
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd repo
+          node --version
+          npm --version
+          npm ci
+          npm run build
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy (push dist to gh-pages)
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+        shell: bash
+        env:
+          REPO: ${{ github.repository }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd repo
+
+          if [ ! -d dist ]; then
+            echo "dist folder not found; build may have failed." >&2
+            exit 1
+          fi
+
+          cd dist
+          touch .nojekyll
+
+          git init
+          git checkout -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Deploy to GitHub Pages" || true
+          git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPO}.git"
+          git push --force origin gh-pages
