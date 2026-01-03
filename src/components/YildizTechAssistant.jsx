@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-const API_KEY = 'AIzaSyCNTuv9jZ9Xr7vOn93HmlnaPmu5Qk1mOj4';
+const API_KEY = 'AIzaSyA_whhzLjruqmKCvKlBChj8n3mCkKawxLs';
 
 const SYSTEM_PROMPT = `Sen YildizTech Asistanısın.
 Amaç: ziyaretçiyi hızlıca anlayıp, doğru hizmete yönlendirmek ve iletişime geçirmek.
