@@ -10,7 +10,7 @@ Gerektiğinde 1-2 net soru sor.
 Asla uydurma fiyat/teslim süresi verme; belirsizse keşif görüşmesi öner.
 İletişim için: e-posta info.yildiztech@gmail.com ve WhatsApp yönlendirmesi önerebilirsin.`;
 
-const MODEL = 'gemini-1.5-flash';
+const MODEL = 'gemini-2.5-flash';
 
 function buildRequestBody(history) {
   const contents = [];
