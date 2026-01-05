@@ -1,36 +1,77 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Float, MeshDistortMaterial, Sphere, Box } from '@react-three/drei';
+
+const AnimatedModel = ({ type }) => {
+  return (
+    <div className="w-full h-32 mb-4">
+      <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <Suspense fallback={null}>
+          <Float speed={2} rotationIntensity={2} floatIntensity={2}>
+            {type === 'ai' ? (
+              <Sphere args={[1, 64, 64]} scale={0.8}>
+                <MeshDistortMaterial
+                  color="#1d7eff"
+                  attach="material"
+                  distort={0.4}
+                  speed={2}
+                />
+              </Sphere>
+            ) : type === 'embedded' ? (
+              <Box args={[1, 1, 1]} scale={0.8}>
+                <meshStandardMaterial color="#1d7eff" wireframe />
+              </Box>
+            ) : (
+              <Sphere args={[1, 32, 32]} scale={0.8}>
+                <meshStandardMaterial color="#1d7eff" wireframe />
+              </Sphere>
+            )}
+          </Float>
+        </Suspense>
+        <OrbitControls enableZoom={false} />
+      </Canvas>
+    </div>
+  );
+};
 
 const services = [
   {
     title: 'Ürün Mühendisliği & Müşteri İhtiyaç Analizi',
     desc: 'Fikirden pazara: gereksinim analizi, teknik fizibilite, hızlandırılmış prototipleme ve MVP teslimi. İş hedefleriyle teknik yol haritası oluşturuyoruz.',
     bullets: ['İş ihtiyaç analizi', 'Hızlı prototip & PoC', 'MVP tasarımı'],
-    icon: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png'
+    icon: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png',
+    type: 'dev'
   },
   {
     title: 'Yapay Zeka & Üretken Modeller',
     desc: 'Model seçiminden üretime kadar ML/LLM çözümleri: veri işleme, model eğitimi, model optimizasyonu ve güvenli dağıtım.',
     bullets: ['Veri hazırlama & ETL', 'Model eğitimi & değerlendirme', 'Model dağıtımı (ONNX/TF Lite)'],
-    icon: 'https://cdn-icons-png.flaticon.com/512/1995/1995574.png'
+    icon: 'https://cdn-icons-png.flaticon.com/512/1995/1995574.png',
+    type: 'ai'
   },
   {
     title: 'Gömülü Sistemler & Firmware',
     desc: 'Gerçek zamanlı işletim sistemleri, enerji-efektif firmware, donanım ile uyumlu test süreçleri ve sahada güncelleme (OTA) çözümleri.',
     bullets: ['RTOS & Bare-metal', 'Firmware test & CI', 'OTA güncellemeler'],
-    icon: 'https://cdn-icons-png.flaticon.com/512/2647/2647626.png'
+    icon: 'https://cdn-icons-png.flaticon.com/512/2647/2647626.png',
+    type: 'embedded'
   },
   {
     title: 'Bulut, Edge & Entegrasyon',
     desc: 'Bulut altyapısı, API tasarımı ve edge cihazların güvenli entegrasyonu — izlenebilir, dayanıklı servisler kuruyoruz.',
     bullets: ['Mikroservis mimarileri', 'API & Webhooks', 'Edge-cloud senkronizasyonu'],
-    icon: 'https://cdn-icons-png.flaticon.com/512/2907/2907240.png'
+    icon: 'https://cdn-icons-png.flaticon.com/512/2907/2907240.png',
+    type: 'cloud'
   },
   {
     title: 'DevOps, Güvenlik & Uyumluluk',
     desc: 'CI/CD pipeline, güvenlik taramaları, containerization ve üretim güvenliği; ayrıca KVKK ve veri güvenliği uyumluluğu danışmanlığı.',
     bullets: ['CI/CD & otomasyon', 'Containerization (Docker/K8s)', 'Güvenlik & KVKK uyumu'],
-    icon: 'https://cdn-icons-png.flaticon.com/512/2859/2859904.png'
+    icon: 'https://cdn-icons-png.flaticon.com/512/2859/2859904.png',
+    type: 'security'
   }
 ];
 
@@ -44,6 +85,7 @@ const Services = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((s,i)=>(
               <motion.div key={s.title} initial={{opacity:0, y:20}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{delay:i*0.12}} className="glass rounded-2xl p-8 flex flex-col items-start hover:shadow-xl transition">
+                <AnimatedModel type={s.type} />
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-lg bg-white/5">
                     <img src={s.icon} alt={s.title} className="w-10 h-10 object-contain" />
@@ -66,5 +108,7 @@ const Services = () => {
     </section>
   );
 };
+
+export default Services;
 
 export default Services;
