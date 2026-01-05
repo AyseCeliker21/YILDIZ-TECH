@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { I18nProvider } from './i18n/i18n';
 import Navbar from './components/Navbar';
@@ -26,10 +26,25 @@ const getRouterBasename = () => {
 };
 
 const App = () => {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <I18nProvider>
       <BrowserRouter basename={getRouterBasename()}>
-        <Navbar />
+        <Navbar toggleTheme={toggleTheme} currentTheme={theme} />
         <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
