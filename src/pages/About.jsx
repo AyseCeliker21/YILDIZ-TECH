@@ -1,9 +1,14 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import Testimonials from '../components/Testimonials';
 
 const About = () => {
   return (
     <>
+      <Helmet>
+        <title>Hakkımızda | YildizTech Teknoloji</title>
+        <meta name="description" content="YildizTech'in misyonu, vizyonu ve uzmanlık alanları hakkında bilgi edinin. Yapay zeka ve donanım entegrasyonunda güvenilir çözüm ortağınız." />
+      </Helmet>
       <section className="py-24 px-6 max-w-5xl mx-auto">
         <div className="max-w-3xl">
           <h1 className="text-4xl font-bold mb-4">Hakkımızda</h1>

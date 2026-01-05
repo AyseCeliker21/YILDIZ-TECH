@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { I18nProvider } from './i18n/i18n';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -42,24 +43,26 @@ const App = () => {
   };
 
   return (
-    <I18nProvider>
-      <BrowserRouter basename={getRouterBasename()}>
-        <Navbar toggleTheme={toggleTheme} currentTheme={theme} />
-        <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/support" element={<Support />} />
-          <Route path="/kvkk" element={<Kvkk />} />
-        </Routes>
-        <CookieConsent />
-        <WhatsAppCTA />
-        <YildizTechAssistant />
-        <Footer />
-      </BrowserRouter>
-    </I18nProvider>
+    <HelmetProvider>
+      <I18nProvider>
+        <BrowserRouter basename={getRouterBasename()}>
+          <Navbar toggleTheme={toggleTheme} currentTheme={theme} />
+          <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/support" element={<Support />} />
+            <Route path="/kvkk" element={<Kvkk />} />
+          </Routes>
+          <CookieConsent />
+          <WhatsAppCTA />
+          <YildizTechAssistant />
+          <Footer />
+        </BrowserRouter>
+      </I18nProvider>
+    </HelmetProvider>
   );
 };
 
