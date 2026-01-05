@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 // İşletme WhatsApp sabit numarası
 const BUSINESS_WHATSAPP = '905521643855';
@@ -17,11 +18,43 @@ const Contact = () => {
     e.preventDefault();
     setError('');
     setStatus('submitting');
-    const subject = encodeURIComponent('Web sitesi iletişim formu');
-    const body = encodeURIComponent(`Ad: ${name}\nE-posta: ${email}\n\nMesaj:\n${message}`);
-    const mailtoUrl = `mailto:${encodeURIComponent(BUSINESS_EMAIL)}?subject=${subject}&body=${body}`;
-    window.location.href = mailtoUrl;
-    setStatus('success');
+
+    try {
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !templateId || !publicKey) {
+        // Fallback to mailto if env vars are missing
+        const subject = encodeURIComponent('Web sitesi iletişim formu');
+        const body = encodeURIComponent(`Ad: ${name}\nE-posta: ${email}\n\nMesaj:\n${message}`);
+        const mailtoUrl = `mailto:${encodeURIComponent(BUSINESS_EMAIL)}?subject=${subject}&body=${body}`;
+        window.location.href = mailtoUrl;
+        setStatus('success');
+        return;
+      }
+
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: name,
+          from_email: email,
+          message: message,
+          to_email: BUSINESS_EMAIL,
+        },
+        publicKey
+      );
+
+      setStatus('success');
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch (err) {
+      console.error('EmailJS Error:', err);
+      setError('Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      setStatus('error');
+    }
   };
   return (
     <section id="contact" className="relative py-32 px-6 max-w-5xl mx-auto">
